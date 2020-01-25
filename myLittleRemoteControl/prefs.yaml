@@ -1,0 +1,8 @@
+common:
+  polltime: 15
+actions:
+  media:
+  - '/usr/bin/mpv'
+  - '--quiet'
+  image:
+  - '/usr/bin/feh'

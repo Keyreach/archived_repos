@@ -1,0 +1,14 @@
+[app] (name=fbrun)
+  [Position]	(WINCENTER)	{0 0}
+  [Layer]	{2}
+[end]
+[group] (workspace=[current])
+  [app] (surf)
+    [Layer] {8}
+  [end]
+[end]
+[group] (workspace=[current])
+  [app] (urxvt)
+    [Layer] {8}
+  [end]
+[end]

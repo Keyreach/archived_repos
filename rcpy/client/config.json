@@ -1,0 +1,7 @@
+{
+	"id": "Test worker",
+	"server": "http://localhost",
+	"state_file": "defaultstate",
+	"knock_timeout": 15,
+	"debug_level": 0
+}

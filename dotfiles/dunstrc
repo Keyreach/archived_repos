@@ -1,0 +1,29 @@
+[global]
+	font = Arial Unicode MS 10
+	allow_markup = yes
+	format = "<b>%s</b>\n%b"
+	word_wrap = yes
+	padding = 6
+	horizontal_padding = 6
+	geometry = "270x20-10+10"
+	
+[frame]
+    width = 0
+	color = "#FFFFFF"
+
+[urgency_low]
+    # IMPORTANT: colors have to be defined in quotation marks.
+    # Otherwise the '#' and following  would be interpreted as a comment.
+    background = "#111111"
+    foreground = "#e0e0e0"
+    timeout = 5
+ 
+[urgency_normal]
+    background = "#111111"
+    foreground = "#e0e0a0"
+    timeout = 5
+ 
+[urgency_critical]
+    background = "#111111"
+    foreground = "#e08080"
+	timeout = 5

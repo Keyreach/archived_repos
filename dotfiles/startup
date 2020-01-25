@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# fluxbox startup-script:
+#
+# Lines starting with a '#' are ignored.
+
+# Change your keymap:
+xmodmap "/home/kirill/.Xmodmap"
+
+# Applications you want to run with fluxbox.
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN ''&'' AT THE END.
+#
+# unclutter -idle 2 &
+# wmnd &
+# wmsmixer -w &
+# idesk &
+# wicd-gtk &
+$HOME/.fehbg &
+# pasystray &
+# dhcpcd-gtk &
+setxkbmap -layout us,ru -variant ,ruu -option grp:alt_shift_toggle &
+# /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+lxqt-policykit-agent &
+xrandr --output VGA-1 --mode 1280x1024 --rate 60.02 --same-as LVDS-1 --output LVDS-1 --off &
+compton -cCb -r12 -o.7 -l -15 -t -15 &
+dunst &
+#
+# Debian-local change:
+#   - fbautostart has been added with a quick hack to check to see if it
+#     exists. If it does, we'll start it up by default.
+which fbautostart > /dev/null
+if [ $? -eq 0 ]; then
+    fbautostart
+fi
+
+# And last but not least we start fluxbox.
+# Because it is the last app you have to run it with ''exec'' before it.
+
+exec fluxbox
+# or if you want to keep a log:
+# exec fluxbox -log "/home/kirill/.fluxbox/log"

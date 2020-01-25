@@ -1,0 +1,25 @@
+# My fluxbox menu
+
+[begin] (Fluxbox)
+	[exec] (Firefox) {firefox}
+	[exec] (Terminal) {urxvt}
+	[exec] (Commander) {tuxcmd}
+	[exec] (Music) {urxvt -name TermiPlay -e mocp}
+	[exec] (Htop) {urxvt -name TermiMon -e htop}
+	[exec] (Editor) {geany}
+	[submenu] (Preferences)
+		[config] (Fluxbox)
+		[submenu] (Window Decorations) {}
+			[stylesdir] (/usr/share/fluxbox/styles)
+			[stylesdir] (~/.fluxbox/styles)
+		[end]
+		[workspaces] (Workspaces)
+		[reconfig] (Reconfigure Fluxbox)
+		[restart] (Restart Fluxbox)
+	[end]
+	[submenu] (End session)
+		[exit] (Logout)
+		[exec] (Reboot) {dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true}
+		[exec] (Shutdown) {dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true}
+	[end]
+[end]

@@ -1,0 +1,7 @@
+lastmod: '20'
+tasklist:
+- command: 'media'
+  arguments:
+  - '/media/Data/track01.mp3'
+  - '/media/Data/track02.mp3'
+#  cron: '2 * * 22 37'

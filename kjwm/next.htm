@@ -1,0 +1,258 @@
+<html>
+<style>
+* {
+	-moz-box-sizing: border-box;
+}
+body {
+	font: 400 8pt Dejavu Sans;
+	background: url('wp.jpg');
+	width: 100%;
+	height: 100%;
+	overflow:hidden;
+}
+.box {
+	position: absolute;
+	box-shadow: 0 0 12px 2px rgba(0,0,0,0.4); // , 0 0 0 1px #000
+	z-index: 9;
+}
+.titlebar {
+	display: table;
+	width: 100%;
+	background: #444;
+	color: #ccc;
+	height: 32px;
+}
+.focused {
+	background: #468;
+	color: #fff;	
+}
+.label, .closr, .maxmr, .shadr {
+	display: table-cell;
+	vertical-align: middle;
+	height: 100%;
+	padding-left: 8px;
+}
+.closr, .maxmr, .shadr {
+	background-position: center center;
+	background-repeat: no-repeat;
+	width: 24px;
+}
+.closr {
+	background-image: url('close.png');
+}
+.maxmr {
+	background-image: url('maximize.png');
+}
+.shadr {
+	background-image: url('minimize.png');
+}
+.container {
+	width: 100%;
+	height: 100%;
+	background: #FFF;
+	resize: both;
+}
+.grip {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 16px;
+	height: 16px;
+	background: url('grip.png');
+}
+</style>
+<body>
+<div id=tools style='position:absolute;left:0;top:0;padding:8px;z-index:90;'>
+<input type=button value=Add onclick='wm.create("Nope",Math.floor(Math.random()*(window.innerWidth-320)),Math.floor(Math.random()*(window.innerHeight-240)),320,240)'>
+<input type=button value="Expose" onclick='wm.smartexpose()'>
+</div>
+<div id=logger style='font: 400 10pt fira mono ot;position:absolute;bottom:0;left:0;color:#FFF;'></div>
+<div id=locker style='position:absolute;width:100%;height:100%;top:0;left:0;background:rgba(0,0,0,0.75);color:#FFF;display:table;z-index:100'>
+<div style='display:table-cell;vertical-align:middle;text-align:center;font-family:clear sans;'>
+<div style='font-size:48px'>nextWM</div>
+<div style='padding-bottom: 8px'>brought to you by ake</div>
+<input type=button value=Unlock onclick='this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)'>
+</div>
+</div>
+<!-- Example empty window -->
+<div class=box style='top: 128px; left: 384px; display: none;' id=template>
+	<div class=titlebar onmousedown="wm.focus(this.parentNode); wm.drag(this.parentNode, event)">
+		<div class=label>#SOMETITLE#</div>
+		<div class=shadr onclick='wm.shade(this.parentNode.parentNode)'></div>
+		<div class=maxmr onclick='wm.maximize(this.parentNode.parentNode)' oncontextmenu='wm.columnize(this.parentNode.parentNode); wm.drop();'></div>
+		<div class=closr onclick='wm.kill(this.parentNode.parentNode)'></div>
+	</div>
+	<div class=container style='width: 320px; height: 240px' onclick='wm.focus(this.parentNode)' onclick="wm.focus(this.parentNode)">
+	<iframe src='#SOMEURL#' style='width:100%;height:100%;border:0;'></iframe>
+	</div>
+	<div class=grip onmousedown="wm.focus(this.parentNode); wm.resize(this.parentNode.querySelector('.container'), event)">
+	</div>
+</div>
+</body>
+<script>
+focused = document.getElementById('template');
+dragged = null;
+resized = null;
+exposed = 0;
+a = 50;
+b = 50;
+n = 1;
+z = 10;
+var tmp=null;
+var wm = {
+	focus: function(o){
+		if(focused!=null){
+			focused.querySelector('.titlebar').classList.remove('focused');
+		}
+		focused = o;
+		focused.style.zIndex = z++;
+		focused.querySelector('.titlebar').classList.add('focused');
+	},
+	drag: function(o, e){
+		dragged = o;
+		yos = e.pageY - o.offsetTop;
+		xos = e.pageX - o.offsetLeft;
+	},
+	drop: function(){
+		dragged = null;
+		resized = null;
+	},
+	maximize: function(o){
+		o.style.transition = 'all 1s ease';
+		if(o.maximized!=1){
+			o.oldHeight = o.querySelector('.container').style.height;
+			o.oldWidth = o.querySelector('.container').style.width;
+			o.oldTop = o.style.top;
+			o.oldLeft = o.style.left;
+			o.style.top = 0;
+			o.style.left = 0;
+			o.querySelector('.container').style.width = window.innerWidth;
+			o.querySelector('.container').style.height = window.innerHeight - 32;
+			o.maximized = 1;
+		} else {
+			o.querySelector('.container').style.width = o.oldWidth;
+			o.querySelector('.container').style.height = o.oldHeight;
+			o.style.top = o.oldTop;
+			o.style.left = o.oldLeft;
+			o.maximized = 0;
+		};
+		setTimeout('focused.style.transition="";',1000);
+	},
+	columnize: function(o){
+		if(o.columnized!=1){
+			o.oldHeight = o.querySelector('.container').style.height;
+			o.oldTop = o.style.top;
+			o.style.top = 0;
+			o.querySelector('.container').style.height = window.innerHeight - 32;
+			o.columnized = 1;
+		} else {
+			o.querySelector('.container').style.height = o.oldHeight;
+			o.style.top = o.oldTop;
+			o.columnized = 0;
+		}
+	},
+	shade: function(o){
+		o.style.transition = 'all 1s ease';
+		if(o.shaded!=1){
+			o.oldHeight = o.querySelector('.container').style.height;
+			o.querySelector('.container').style.height = 0;
+			o.shaded = 1;
+		} else {
+			o.querySelector('.container').style.height = o.oldHeight;
+			o.shaded = 0;
+		}
+		setTimeout('focused.style.transition=""',1000);
+	},
+	resize: function(o, e){
+		resized = o;
+		xos = resized.offsetLeft+resized.offsetWidth-e.pageX;
+		yos = resized.offsetTop+resized.offsetHeight-e.pageY;
+	},
+	expose: function(cols){
+		boxes = document.getElementsByClassName('box');
+		boxcnt = boxes.length-1;
+		avgWidth = Math.floor(window.innerWidth / (boxcnt < cols ? boxcnt : cols));
+		avgHeight = Math.floor(window.innerHeight / (Math.floor((boxcnt-1)/cols)+1));
+		if(exposed!=1){
+		for(i=1; i<boxes.length; i++){
+			boxes[i].oldHeight = boxes[i].querySelector('.container').style.height;
+			boxes[i].oldWidth = boxes[i].querySelector('.container').style.width;
+			boxes[i].oldTop = boxes[i].style.top;
+			boxes[i].oldLeft = boxes[i].style.left;
+			boxes[i].style.transition = 'all 1s ease';
+			boxes[i].style.top = ((Math.floor((i-1)/cols)*avgHeight)+8)+'px';
+			boxes[i].style.left = ((avgWidth*(((i-1)%cols)))+8)+'px';
+			boxes[i].querySelector('.container').style.width = (avgWidth-16)+'px'
+			boxes[i].querySelector('.container').style.height = (avgHeight-48)+'px';
+		}
+		exposed = 1;
+		} else {
+			for(i=1; i<boxes.length; i++){
+				boxes[i].style.transition = 'all 1s ease';
+				boxes[i].querySelector('.container').style.width = boxes[i].oldWidth;
+				boxes[i].querySelector('.container').style.height = boxes[i].oldHeight;
+				boxes[i].style.top = boxes[i].oldTop;
+				boxes[i].style.left = boxes[i].oldLeft;
+			}
+			exposed = 0;
+		}
+		setTimeout('for(i=1;i<boxes.length;i++) boxes[i].style.transition="";',1000);
+	},
+	smartexpose: function(){
+		boxes = document.getElementsByClassName('box');
+		boxcnt = boxes.length-1;
+		if(boxcnt==4){
+			wm.expose(2);
+		}
+		else if(boxcnt==3){
+			wm.expose(3);
+		}
+		else if(((boxcnt%3)==0)||((boxcnt%3)>(boxcnt%4))){
+			wm.expose(3);
+		}
+		else if(((boxcnt%4)==0)||((boxcnt%3)<(boxcnt%4))){
+			wm.expose(4);
+		}
+		else {
+			wm.expose(3);
+		}
+	},
+	kill: function(o){
+		o.style.transition = 'all 1s ease';
+		o.style.opacity = 0;
+		tmp = o;
+		setTimeout("tmp.parentNode.removeChild(tmp)",1000);
+	},
+	create: function(title, x, y, w, h){
+		yaw = document.createElement('div');
+		yaw.className = 'box';
+		yaw.innerHTML = document.querySelector('#template').innerHTML.replace('#SOMEURL#','run.htm').replace('#SOMETITLE#','Window '+n++);
+		yaw.style.top = y;
+		yaw.style.left = x;
+		yaw.querySelector('.container').style.width = w;
+		yaw.querySelector('.container').style.height = h;
+		document.body.appendChild(yaw);
+	}
+}
+
+window.oncontextmenu = function(){ return false };
+
+window.onmousemove = function(event){
+	if(dragged){
+		dragged.style.top = (event.pageY - yos) + 'px';
+		dragged.style.left = (event.pageX - xos) + 'px';
+	}
+	if(resized){
+		resized.style.width = (event.pageX - resized.offsetLeft + xos) + 'px';
+		resized.style.height = (event.pageY - resized.offsetTop + yos) + 'px';
+	}
+}
+
+window.onerror = function(msg, url, line){
+	document.getElementById('logger').innerHTML+=msg+' in '+url+' on '+line+'<br>';
+}
+window.onmouseup = function(){
+	wm.drop();
+}
+</script>
+</html>

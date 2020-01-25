@@ -1,0 +1,241 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+body {
+	font-family: Sansation, sans-serif;
+	margin: 0;
+}
+#board {
+	background: url("asphalt.jpg");
+	width: 192px;
+	height: 100%;
+	border: 1px solid #000;
+	position: relative;
+	overflow: hidden;
+	margin: 0 auto;
+}
+#npcar {
+	position: absolute;
+	top: 0;
+	left: 8;
+	width: 32px;
+	height: 48px;
+	color: #fff;
+	background: url('car0.png');
+}
+#npcar2 {
+	position: absolute;
+	top: 64;
+	left: 56;
+	width: 32px;
+	height: 48px;
+	color: #fff;
+	background: url('car1.png');
+}
+#neeva {
+	position: absolute;
+	top: -64;
+	left: 104;
+	width: 32px;
+	height: 48px;
+	color: #000;
+	background-size: 100% 100%;
+	background: url('car2.png');
+}
+#pcar {
+	position: absolute;
+	top: 384px;
+	left: 56;
+	width: 32px;
+	height: 48px;
+	color: #fff;
+	background: url('car.png');
+	background-size: 100% 100%;
+	transition: 0.2s ease;
+	-o-transition: 0.2s ease;
+}
+.car {
+	background-size: 100% 100%;
+	font-family: Sansation, sans-serif;
+	font-size: 12px;
+	color: #f00;
+	text-align: center;
+}
+#skore {
+	width: 192px;
+	margin: 0 auto;
+	font-family: Sansation, sans-serif;
+	font-size: 14px;
+}
+#spdmtr,#hitpoints,#tahometer {
+	height: 8px;
+	width: 192px;
+	float: right;
+	background: #000;
+	background-size: 100%;
+	transition: 0.2s ease;
+	-o-transition: 0.5s ease;
+}
+</style>
+</head>
+<body>
+<div id=hud style='background:#222;color:#FFF;width:194px;margin: 0 auto;'>
+<div id=skore>Speed: 80 pixels per second</div>
+<div style='width: 192px;margin: 0 auto;border:1px solid #222;overflow:hidden;background: url("meter.png"); background-size: 100%;'>
+<div id=spdmtr></div>
+</div>
+<div style='width: 192px;margin: 0 auto;border:1px solid #222;overflow:hidden;background: url("hp.png"); background-size: 100%;'>
+<div id=hitpoints style='width:0'></div>
+</div>
+</div>
+<div id=board>
+<div id=npcar class=car></div>
+<div id=npcar2 class=car></div>
+<div id=neeva class=car></div>
+<div id=bang style='position:absolute;text-align:center;width:100%;color:#FFF;top: 200px;font-family:Sansation, sans-serif;font-size:12px;'>
+<span onclick='document.getElementById("bang").innerHTML="";pause=-1;' style='background:#fff;padding:4px; color:#000;cursor:pointer;outline:4px solid rgba(255,255,255,0.5)'>START</span>
+</div>
+<div id=pcar></div>
+</div>
+<div style='position:fixed;bottom:0;width:100%;background:rgba(0,0,0,0.5);text-align:center;font-size:24px;' id='wheel'>
+<div style='display:inline-block;width:40%' onclick='goLeft()'> &laquo; </div>
+<div style='display:inline-block;width:40%' onclick='goRight()'> &raquo; </div>
+</div>
+</body>
+<script>
+var pause = 1;
+var car_y = new Array();
+var car_x = new Array();
+var car_mod = new Array();
+car_y[0] = 0;
+car_x[0] = 0;
+var own_x = 1;
+car_y[1] = 128;
+car_x[1] = 1;
+car_y[2] = -64;
+car_x[2] = 2;
+car_mod[0] = $('npcar');
+car_mod[1] = $('npcar2');
+car_mod[2] = $('neeva');
+var own_mod = $('pcar');
+var car_spd = new Array(1,4,-3);
+var car_lines = new Array(2,4,2);
+var car_shift = new Array(0,0,2);
+var c = 1;
+var z = 0;
+var asd = 2;
+var speed = nspeed = 4;
+var own_hp = 192;
+var car_num = 3;
+var kilometers = 0;
+var collisions = 0;
+var timer = 0;
+$('board').style.height = window.innerHeight-$('hud').offsetHeight;
+interface_hp = $('hitpoints');
+function $(id){ return document.getElementById(id); }
+function mv(){
+	$('skore').innerHTML = (speed*20/48*3*1.5*3.6).toFixed(0)+' км/ч / '+timer.toFixed(0);
+	$('spdmtr').style.width = 192 - speed*4;
+
+	// Collision block begins
+
+	for(i=0;i<car_num;i++){
+		if((car_y[i] > 384 - speed)&&(car_y[i] < 420)&&(car_x[i] == own_x)){
+			for(j=0;j<car_num;j++){
+				if(i!=j){
+				do{
+					car_x[i] = Math.floor(Math.random()*car_lines[i]) + car_shift[i];
+				} while(car_x[i]==car_x[j]);
+				}
+			}
+			car_mod[i].style.left = car_x[i] * 48 + 8;
+			car_y[i] = 0;
+			collisions++;
+			if(own_hp > speed){
+				own_hp -= speed;
+				speed /= 4;
+				own_mod.style.backgroundImage = 'url("xcar.png")';
+				$('bang').innerHTML = 'БАБАХ!';
+				setTimeout('speed *= 4; own_mod.style.backgroundImage = \'url("car.png")\';$(\'bang\').innerHTML = \'\'',2000);
+			}
+			else {
+				alert('ИГРА ОКОНЧЕНА\nАВАРИЙ: '+collisions+'\nПРОЕХАЛ: '+Math.ceil(kilometers));
+				top.location.href= top.location.href;
+			}
+			interface_hp.style.width = 192 - own_hp;
+		}
+	}
+
+	// Collision block ends
+
+	// Movement block begins
+if(pause!=1){
+	for(i=0;i<car_num;i++){
+		if(car_y[i] < parseInt($('board').style.height)){
+			car_y[i] += speed + car_spd[i];
+		}
+		else {
+			for(j=0;j<car_num;j++){
+				if(i!=j){
+				do{
+					car_x[i] = Math.floor(Math.random()*car_lines[i]) + car_shift[i];
+				} while(car_x[i]==car_x[j]);
+				}
+			}
+			car_mod[i].style.left = car_x[i] * 48 + 8;
+			// car_mod[i].style.backgroundImage = 'url("car'+Math.floor(Math.random()*4)+'.png")'
+			car_y[i] = 0;
+		}
+		car_mod[i].style.top = car_y[i];
+	}
+
+	// Movement block ends
+	c++;
+	speed = nspeed = 0.3*Math.sqrt(c);	
+
+	z+=speed;
+	if(z < 96){
+		$('board').style.backgroundPosition = '0px '+z+'px';
+	}
+	else {
+		z = 0;
+	}
+	kilometers += speed*20/48*3/1000;
+	timer+=0.2;
+}
+}
+function goLeft(){
+if(pause!=1){
+	own_mod.style.backgroundImage='url("lcar.png")'; if(own_x > 0){ own_x-- }; own_mod.style.left = own_x*48+8; setTimeout('own_mod.style.backgroundImage=\'url("car.png")\';', 200);
+}
+}
+function goRight(){
+if(pause!=1){
+	own_mod.style.backgroundImage='url("rcar.png")'; if(own_x < 3){ own_x++ }; own_mod.style.left = own_x*48+8; setTimeout('own_mod.style.backgroundImage=\'url("car.png")\';', 200);
+}
+}
+/* $('board').onclick = function(e){
+	x1 = e.pageX - $('board').offsetLeft;
+	if((x1>0)&&(x1<=48)){ own_x = 0 };
+	if((x1>48)&&(x1<=96)){ own_x = 1 };
+	if((x1>96)&&(x1<=144)){ own_x = 2 };
+	if((x1>144)&&(x1<=192)){ own_x = 3 };
+	own_mod.style.left = own_x*48+8;
+} */
+window.onkeydown = function(e){
+	if(e.keyCode == 80){ pause = -pause; $('bang').innerHTML = (pause==1 ? 'ПАУЗА' : ''); }
+	/* if(e.keyCode == 40){ speed = nspeed/8 }
+	if(e.keyCode == 38){ speed = nspeed*8; }; */
+	if(pause!=1){
+		if(e.keyCode == 37){ own_mod.style.backgroundImage='url("lcar.png")'; if(own_x > 0){ own_x-- }; own_mod.style.left = own_x*48+8; setTimeout('own_mod.style.backgroundImage=\'url("car.png")\';', 200); }
+		if(e.keyCode == 39){ own_mod.style.backgroundImage='url("rcar.png")'; if(own_x < 3){ own_x++ }; own_mod.style.left = own_x*48+8; setTimeout('own_mod.style.backgroundImage=\'url("car.png")\';', 200); }
+	}
+}
+window.onkeyup = function(e){
+	/* if(e.keyCode == 38){ speed = nspeed; }
+	if(e.keyCode == 40){ speed = nspeed; } */
+}
+setInterval('mv()',50)
+</script>
+</html>

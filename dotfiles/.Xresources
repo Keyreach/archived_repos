@@ -1,0 +1,50 @@
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+rofi.color-normal: #111111, #888888, #111111, #111111, #009538
+rofi.color-window: #111111, #888888
+rofi.bw: 1
+rofi.padding: 4
+rofi.font: Envy Code R 10
+Xcursor.theme: jimmac
+URxvt.scrollBar: false
+URxvt.background: rgb:0c/0c/0c
+URxvt.foreground: rgb:ff/ff/ff
+URxvt.internalBorder: 8
+URxvt.font: xft:Anka/Coder Condensed:size=11
+URxvt.letterSpace: -1
+
+! black
+*.color0:       #000000
+*.color8:       #4d4d4d
+
+! red
+*.color1:       #804060
+*.color9:       #804060
+
+! green
+*.color2:       #a0c080
+*.color10:      #a0c080
+
+! yellow
+*.color3:       #e0c0a0
+*.color11:      #e0c0a0
+
+! blue
+*.color4:       #406080
+*.color12:      #406080
+
+! magenta
+*.color5:       #c0a0e0
+*.color13:      #c0a0e0
+
+! cyan
+*.color6:       #60a080
+*.color14:      #60a080
+
+! white
+*.color7:       #e5e5e5
+*.color15:      #ffffff

@@ -1,0 +1,11 @@
+! The following line will prevent styles from setting the background.
+! background: none
+toolbar.clock.font:				Arial Unicode MS-10
+toolbar.workspace.font:			Arial Unicode MS-13
+toolbar.iconbar.focused.font:	Arial Unicode MS-10
+toolbar.iconbar.unfocused.font:	Arial Unicode MS-10
+window.font:					Arial Unicode MS-10
+menu.title.font:				Arial Unicode MS-10
+menu.frame.font:				Arial Unicode MS-10
+menu.hilite.font:				Arial Unicode MS-10
+*.font: 						Arial Unicode MS-10

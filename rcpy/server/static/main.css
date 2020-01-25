@@ -1,0 +1,37 @@
+body {
+	max-width: 640px;
+	margin: 0 auto;
+	font: condensed normal normal 400 10pt "Input Sans", "Input Sans Condensed", monospace;
+}
+a {
+	text-decoration: none;
+	color: #4AF;
+}
+input, button {
+	background: #FFF;
+	border: 1px solid #888;
+	padding: 6px;
+	font: condensed normal normal 400 10pt "Input Sans", "Input Sans Condensed", monospace;
+}
+.box-ok {
+	padding: 8px;
+	background: #4C4;
+	border: 1px solid #080;
+	margin: 4px 0;
+}
+.box-fail {
+	padding: 8px;
+	background: #C44;
+	border: 1px solid #800;
+	margin: 4px 0;
+}
+.hbox {
+	padding: 8px 16px;
+}
+.box-ok *, .box-fail * {
+	color: #FFF;
+}
+#top {
+	background: #111;
+	color: #DDD;
+}
